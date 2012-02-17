@@ -1,0 +1,359 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0103 
+header_name {.h} 
+code_name {.cpp}
+decl {\#include <stdio.h>} {} 
+
+decl {\#include <FL/Fl_File_Chooser.H>} {} 
+
+decl {\#include <FL/Fl_Ask.H>} {} 
+
+decl {\#include <FL/Fl_Help_Dialog.H>} {} 
+
+decl {\#include "Building.h"} {} 
+
+decl {\#include "Utils.h"} {} 
+
+decl {class Game;} {} 
+
+decl {class smu_UI;} {} 
+
+decl {\#include "Game.h"} {} 
+
+class smu_UI {open
+} {
+  decl {Building *curBuilding;} {}
+  decl {Game *game;} {}
+  Function {smu_UI()} {open
+  } {
+    Fl_Window mainWin {
+      label {SimMizzou V1.2} open
+      xywh {5 23 887 686} hide
+      code0 {\#include "Game.h"}
+      code1 {\#include <stdlib.h>}
+      code2 {\#include "Building.h"}
+      code3 {\#include <FL/Fl_File_chooser.H>}
+    } {
+      Fl_Menu_Bar mainMenu {
+        xywh {0 0 160 35}
+      } {
+        submenu fileSub {
+          label File open
+          xywh {0 0 100 20}
+        } {
+          menuitem newItem {
+            label {New Game}
+            callback {newGame();}
+            xywh {0 0 100 20} shortcut 0x8006e labelfont 1
+          }
+          menuitem loadItem {
+            label {Load Game}
+            callback {loadGame();}
+            xywh {10 10 100 20} shortcut 0x8006c
+          }
+          menuitem saveItem {
+            label {Save Game}
+            callback {saveGame();}
+            xywh {20 20 100 20} shortcut 0x80073
+          }
+          menuitem quitItem {
+            label {Quit Game}
+            callback {hide();}
+            xywh {30 30 100 20} shortcut 0x80071 labelfont 1
+          }
+        }
+        menuitem budgetItem {
+          label Budget
+          callback {budget();}
+          xywh {25 25 100 20} shortcut 0x80062
+        }
+        menuitem helpItem {
+          label Help
+          callback {help();}
+          xywh {35 35 100 20} shortcut 0x80062
+        }
+      }
+      Fl_Box toolBox {
+        label Tools
+        xywh {0 250 160 160} box UP_BOX color 50 labelfont 3 align 17
+      }
+      Fl_Box schoolBox {
+        label {School Info}
+        xywh {0 35 160 215} box UP_BOX color 50 labelfont 3 align 17
+      }
+      Fl_Box drawWindow {
+        xywh {160 60 725 625}
+        code0 {\#include "glWindow.h"}
+        class glWindow
+      }
+      Fl_Box logoBox {
+        image {images/title.gif} xywh {160 0 200 40}
+      }
+      Fl_Input G_NameInput {
+        label {Your Name}
+        callback {renamePlayer();}
+        xywh {10 80 140 20} labelsize 13 align 5 textsize 13
+      }
+      Fl_Value_Output G_ApprovalOutput {
+        label {Your Approval: (%)}
+        xywh {10 125 140 20} box DOWN_BOX color 7 labelsize 13 align 5 textsize 13
+      }
+      Fl_Output G_MoneyOutput {
+        label {Current Budget Surplus:}
+        xywh {10 170 140 20} labelsize 13 align 5 textsize 13
+      }
+      Fl_Output G_MonthOutput {
+        label {Date:}
+        xywh {10 215 100 20} labelsize 13 align 5 textsize 13
+      }
+      Fl_Value_Output G_YearOutput {
+        xywh {110 215 40 20} box DOWN_BOX color 7 labelsize 13 align 0 textsize 13
+      }
+      Fl_Output O_OpinionOutput {
+        label {Student Opinion}
+        xywh {160 40 655 20} align 9
+      }
+      Fl_Value_Output O_PercentOutput {
+        label {% Agreeing}
+        xywh {815 40 70 20} box DOWN_BOX color 7 labelsize 13 align 9 textsize 13
+      }
+      Fl_Choice T_BuildChoice {
+        label {Building Type:}
+        callback {evalBuildPrice();} open
+        xywh {10 295 140 20} down_box BORDER_BOX labelsize 13 align 1 when 1 textsize 13
+      } {}
+      Fl_Value_Output T_PriceOutput {
+        label {Price $:}
+        xywh {60 315 90 20} box DOWN_BOX color 7 labelsize 13 textsize 13
+      }
+      Fl_Group modeGroup {open
+        xywh {5 365 175 35}
+      } {
+        Fl_Button T_PlaceButton {
+          label Place
+          callback {modePlace();}
+          xywh {5 365 45 30} type Radio
+        }
+        Fl_Button T_SelectButton {
+          label Select
+          callback {modeSelect();}
+          xywh {50 365 45 30} type Radio
+        }
+        Fl_Button T_DownButton {
+          callback {modeGroundDown();}
+          image {images/grnddn.gif} xywh {95 365 30 30} type Radio
+        }
+        Fl_Button T_UpButton {
+          callback {modeGroundUp();}
+          image {images/grndup.gif} xywh {125 365 30 30} type Radio
+        }
+      }
+      Fl_Box buildingBox {
+        label {Building Info}
+        xywh {0 410 160 275} box UP_BOX color 50 labelfont 3 align 17
+      }
+      Fl_Input B_NameInput {
+        label {Building Name}
+        callback {renameBuilding();}
+        xywh {10 455 140 20} labelsize 13 align 5 when 1 textsize 13
+      }
+      Fl_Output B_MonthOutput {
+        label {Date Completed:}
+        xywh {10 500 95 20} labelsize 13 align 5 textsize 13
+      }
+      Fl_Value_Output B_YearOutput {
+        xywh {105 500 40 20} box DOWN_BOX color 7 labelsize 13 align 0 textsize 13
+      }
+      Fl_Output B_TypeOutput {
+        label {Bldg Type:}
+        xywh {70 530 75 20} labelsize 11 textsize 11
+      }
+      Fl_Value_Output B_UpgradeLevelOutput {
+        label {Upgrade Lvl:}
+        xywh {70 550 75 20} box DOWN_BOX color 7 labelsize 11 textsize 11
+      }
+      Fl_Value_Output B_UpgradePriceOutput {
+        label {Next Lvl $:}
+        xywh {70 570 75 20} box DOWN_BOX color 7 labelsize 11 textsize 11
+      }
+      Fl_Button B_UpgradeButton {
+        label {Upgrade Bulding}
+        callback {upgradeBldg();}
+        xywh {20 600 115 30}
+      }
+      Fl_Button B_DemolishButton {
+        label {Demolish Bulding}
+        callback {demolishBldg();}
+        xywh {20 640 115 30}
+      }
+      Fl_Box infoBox {
+        label {SimMizzou V1.2 - By John Loyd & Scott Parker - For CECS361 WS03}
+        xywh {360 0 525 20} labelsize 15 align 212
+      }
+      Fl_Box modeBox {
+        label {Cursor Mode}
+        xywh {10 345 140 20} labelsize 15 align 208
+      }
+    }
+    code {game = new Game(this);
+setGameOver();
+
+T_BuildChoice->add(typesTitlesLong[0]);
+T_BuildChoice->add(typesTitlesLong[1]);
+T_BuildChoice->add(typesTitlesLong[2]);
+T_BuildChoice->add(typesTitlesLong[3]);
+T_BuildChoice->add(typesTitlesLong[4]);
+T_BuildChoice->add(typesTitlesLong[5]);
+T_BuildChoice->add(typesTitlesLong[6]);
+T_BuildChoice->add(typesTitlesLong[7]);
+T_BuildChoice->add(typesTitlesLong[8]);
+T_BuildChoice->add(typesTitlesLong[9]);
+T_BuildChoice->value(0);
+T_SelectButton->setonly();} {selected
+    }
+  }
+  Function {budget()} {} {
+    code {printf("IMPLEMENT budget() in smu_UI\\n");} {}
+  }
+  Function {evalBuildPrice()} {} {
+    code {T_PriceOutput->value( typesPrices[T_BuildChoice->value()]);} {}
+  }
+  Function {getName()} {return_type {const char*}
+  } {
+    code {return G_NameInput->value();} {}
+  }
+  Function {help()} {} {
+    code {Fl_Help_Dialog *hd = new Fl_Help_Dialog();
+hd->load("help.html");
+hd->show();} {}
+  }
+  Function {loadGame()} {open
+  } {
+    code {char *newfile = fl_file_chooser("Load Save SimMizzou Game (*.smu)", "*.smu", NULL );
+
+if(newfile != NULL)
+	game->loadGame(newfile);
+
+game->informUI();
+saveItem->activate();
+G_NameInput->activate();} {}
+  }
+  Function {loadBuilding(Building *bldg)} {} {
+    code {curBuilding = bldg;
+
+if(curBuilding == NULL)
+{
+	B_NameInput->value("None Selected");
+	B_NameInput->deactivate();
+	B_MonthOutput->value("NONE");
+	B_MonthOutput->deactivate();
+	B_YearOutput->deactivate();
+	B_TypeOutput->value("NONE");
+	B_TypeOutput->deactivate();
+	B_UpgradeLevelOutput->deactivate();
+	B_UpgradePriceOutput->deactivate();
+	B_UpgradeButton->deactivate();
+	B_DemolishButton->deactivate();
+}
+else
+{
+	B_NameInput->activate();
+	B_NameInput->value( bldg->getName() );
+	B_MonthOutput->activate();
+	B_MonthOutput->value( bldg->getMonth() );
+	B_YearOutput->activate();
+	B_YearOutput->value( bldg->getYear() );
+	B_TypeOutput->activate();
+	B_TypeOutput->value( bldg->getTypeShort() );
+	B_UpgradeLevelOutput->activate();
+	B_UpgradeLevelOutput->value( bldg->getUpgradeLevel() );
+	B_UpgradePriceOutput->activate();
+	B_UpgradePriceOutput->value( bldg->getUpgradePrice() );
+	B_UpgradeButton->activate();
+	B_DemolishButton->activate();
+}} {}
+  }
+  Function {newGame()} {} {
+    code {game->newGame();
+game->informUI();
+saveItem->activate();
+G_NameInput->activate();} {}
+  }
+  Function {renameBuilding()} {} {
+    code {if(curBuilding != NULL)
+	curBuilding->rename( B_NameInput->value() );} {}
+  }
+  Function {renamePlayer()} {} {
+    code {if(game != NULL)
+	game->setName( G_NameInput->value() );} {}
+  }
+  Function {saveGame()} {} {
+    code {char *newfile = fl_file_chooser("Save SimMizzou Game (*.smu)", "*.smu", NULL );
+
+if(newfile != NULL)
+	game->saveGame(newfile);} {}
+  }
+  Function {setGameApproval(int approval)} {} {
+    code {G_ApprovalOutput->value(approval);} {}
+  }
+  Function {setGameMoney(char* money)} {} {
+    code {G_MoneyOutput->value(money);} {}
+  }
+  Function {setGameMonth(char *month)} {} {
+    code {G_MonthOutput->value(month);} {}
+  }
+  Function {setGameName(char *name)} {} {
+    code {G_NameInput->value(name);} {}
+  }
+  Function {setGameOver()} {} {
+    code {saveItem->deactivate();
+
+G_NameInput->value("None");
+G_NameInput->deactivate();
+G_ApprovalOutput->value(0);
+G_MoneyOutput->value(0);
+G_MonthOutput->value(months[0]);
+G_YearOutput->value(0);
+O_OpinionOutput->value("Please start a new game or load a saved game");
+O_PercentOutput->value(100);
+
+loadBuilding(NULL);} {}
+  }
+  Function {setGameYear(int year)} {} {
+    code {G_YearOutput->value(year);} {}
+  }
+  Function {setOpinion(char *opinion)} {} {
+    code {O_OpinionOutput->value( opinion );} {}
+  }
+  Function {setOpinionPercent(int percent)} {} {
+    code {O_PercentOutput->value( percent );} {}
+  }
+  Function {show()} {} {
+    code {mainWin->show();} {}
+  }
+  Function {hide()} {} {
+    code {mainWin->hide();
+exit(0);} {}
+  }
+  Function {modePlace()} {open
+  } {
+    code {game->setMode(MODE_PLACE);} {}
+  }
+  Function {modeSelect()} {} {
+    code {game->setMode(MODE_SELECT);} {}
+  }
+  Function {modeGroundDown()} {} {
+    code {game->setMode(MODE_GROUND_DOWN);} {}
+  }
+  Function {modeGroundUp()} {} {
+    code {game->setMode(MODE_GROUND_UP);} {}
+  }
+  Function {upgradeBldg()} {open
+  } {
+    code {game->upgradeBuilding(curBuilding->getX(), curBuilding->getY());} {}
+  }
+  Function {demolishBldg()} {open
+  } {
+    code {game->removeBuilding(curBuilding->getX(), curBuilding->getY());} {}
+  }
+} 
